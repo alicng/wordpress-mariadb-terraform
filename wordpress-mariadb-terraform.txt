@@ -1,6 +1,6 @@
 // # Set secrets via environment variables
-//export TF_VAR_access_key=(the username) AKIARNCH4LKMTOL3ORBZ
-//export TF_VAR_secret_key=(the password) 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
+//export TF_VAR_access_key=(the username) 
+//export TF_VAR_secret_key=(the password) 
 
 variable "access_key" {
 description = "The access key for the AWS user"
@@ -21,18 +21,18 @@ secret_key= var.secret_key
 }
 
 //creating our own vpc
-resource "aws_vpc" "ashu-vpc" {
+resource "aws_vpc" "ali-vpc" {
 cidr_block = "10.0.0.0/16"
 instance_tenancy = "default"
 
 tags = {
-Name = "ashu-vpc"
+Name = "ali-vpc"
 }
 }
 
 //creating public subnet for wordpress
 resource "aws_subnet" "wpsubnet" {
-vpc_id = aws_vpc.ashu-vpc.id
+vpc_id = aws_vpc.ali-vpc.id
 cidr_block = "10.0.1.0/24"
 map_public_ip_on_launch="true"
 availability_zone="us-east-1a"
@@ -44,7 +44,7 @@ Name = "wpsubnet"
 //creating private subnet for mysql
 
 resource "aws_subnet" "sqlsubnet" {
-vpc_id = aws_vpc.ashu-vpc.id
+vpc_id = aws_vpc.ali-vpc.id
 cidr_block = "10.0.2.0/24"
 availability_zone="us-east-1a"
 tags = {
@@ -53,7 +53,7 @@ Name = "sqlubnet"
 }
 //creating internet gateway
 resource "aws_internet_gateway" "wpgw" {
-vpc_id = aws_vpc.ashu-vpc.id
+vpc_id = aws_vpc.ali-vpc.id
 
 tags = {
 Name = "wpgw"
@@ -62,7 +62,7 @@ Name = "wpgw"
 
 //creating route table
 resource "aws_route_table" "wproute" {
-vpc_id = aws_vpc.ashu-vpc.id
+vpc_id = aws_vpc.ali-vpc.id
 
 route {
 cidr_block = "0.0.0.0/0"
@@ -85,7 +85,7 @@ route_table_id = aws_route_table.wproute.id
 //create secuirty group for wordpress for wpsubnet
 resource "aws_security_group" "wpSG" {
 name = "wpSG"
-vpc_id = aws_vpc.ashu-vpc.id
+vpc_id = aws_vpc.ali-vpc.id
 ingress {
 description= "allow ssh"
 from_port = 22
@@ -120,7 +120,7 @@ Name= "wpSG"
 resource "aws_security_group" "sqlSG" {
 name = "sqlSG"
 description = "managed for mysql servers"
-vpc_id = aws_vpc.ashu-vpc.id
+vpc_id = aws_vpc.ali-vpc.id
 ingress {
 protocol = "tcp"
 from_port = 3306
@@ -147,7 +147,7 @@ Name= "sqlSG"
 resource "aws_security_group" "bastion-allow" {
 name = "bastion-to-mysql"
 description = "ssh from bastion"
-vpc_id = aws_vpc.ashu-vpc.id
+vpc_id = aws_vpc.ali-vpc.id
 
 
 ingress {
@@ -175,7 +175,7 @@ Name = "bastion-allow"
 resource "aws_security_group" "admin-bastion" {
 name = "bastion-host"
 description = "ssh login into bastion host"
-vpc_id = aws_vpc.ashu-vpc.id
+vpc_id = aws_vpc.alivpc.id
 
 
 ingress {
